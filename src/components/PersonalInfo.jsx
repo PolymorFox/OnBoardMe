@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react'
 export default function PersonalInfo({ onComplete }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("Male");
 
   function handleSubmit(e) {
     e.preventDefault();

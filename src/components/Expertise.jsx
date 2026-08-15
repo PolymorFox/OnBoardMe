@@ -3,14 +3,16 @@ import { useState } from "react";
 import { ArrowRight } from 'lucide-react';
 
 export default function Expertise({ onComplete }) {
-  const [expertise, setExpertise] = useState("");
   const [languages, setLanguages] = useState([]);
   const [selected, setSelected] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
-    setExpertise(e.target.expertise.value);
-    onComplete({ expertise, languages });
+    const expertiseValue = e.target.expertise.value;
+    onComplete({
+        expertise: expertiseValue,
+        languages: languages
+    });
   }
 
   return (
