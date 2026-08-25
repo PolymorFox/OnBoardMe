@@ -4,122 +4,31 @@ import PhaseCard from "./PhaseCard";
 import NextSteps from "./NextSteps";
 import Buddy from "./Buddy";
 
-export default function Checklist() {
+export default function Checklist({ user }) {
   const [completedTasks, setCompletedTasks] = useState(0);
+  // Get tasks from passed user argument
+  const tasks = JSON.parse(user.tasks)
   const [phases, setPhases] = useState([
     {
       phase: "PHASE 01",
       title: "Foundation & Trust",
       description: "Compliance, security, access and culture",
       status: "current",
-      tasks: [
-        {
-            index: 0,
-            title: "Complete AML & KYC training",
-            category: "Compliance",
-            status: "upcoming",
-          },
-        {
-            index: 1,
-            title: "Acknowledge Code of Conduct",
-            category: "Compliance",
-            status: "upcoming",
-          },
-        {
-            index: 2,
-            title: "Complete information security training",
-            category: "Security",
-            status: "upcoming",
-          },
-        {
-            index: 3,
-            title: "Set up company email and MFA",
-            category: "IT & Systems",
-            status: "upcoming",
-          },
-        {
-            index: 4,
-            title: "Set up VPN and password manager",
-            category: "IT & Systems",
-            status: "upcoming",
-          },
-      ]
+      tasks: tasks[0],
     },
     {
       phase: "PHASE 02",
       title: "Role Immersion",
       description: "Deep-dive into your role, tools, and team workflows",
       status: "pending",
-      tasks: [
-        {
-            index: 0,
-            title: "Complete Payfonte product overview",
-            category: "Product",
-            status: "upcoming",
-          },
-        {
-            index: 1,
-            title: "Complete role-specific compliance training",
-            category: "Compliance",
-            status: "upcoming",
-          },
-        {
-            index: 2,
-            title: "Review payment and transaction flows",
-            category: "Role immersion",
-            status: "upcoming",
-          },
-        {
-            index: 3,
-            title: "Complete your first practical challenge",
-            category: "Role immersion",
-            status: "upcoming",
-          },
-        {
-            index: 4,
-            title: "Complete your first independent task",
-            category: "Role immersion",
-            status: "upcoming",
-          },
-      ]
+      tasks: tasks[1],
     },
     {
       phase: "PHASE 03",
       title: "Continuous Development",
       description: "Feedback, learning and long-term growth",
       status: "pending",
-      tasks: [
-        {
-            index: 0,
-            title: "Complete Payfonte product overview",
-            category: "Product",
-            status: "upcoming",
-          },
-        {
-            index: 1,
-            title: "Complete role-specific compliance training",
-            category: "Compliance",
-            status: "upcoming",
-          },
-        {
-            index: 2,
-            title: "Review payment and transaction flows",
-            category: "Role immersion",
-            status: "upcoming",
-          },
-        {
-            index: 3,
-            title: "Complete your first practical challenge",
-            category: "Role immersion",
-            status: "upcoming",
-          },
-        {
-            index: 4,
-            title: "Complete your first independent task",
-            category: "Role immersion",
-            status: "upcoming",
-          },
-      ]
+      tasks: tasks[2],
     }
   ])
   const currentDate = new Date().toLocaleDateString("en-US", {
@@ -163,14 +72,16 @@ export default function Checklist() {
           <div>
             <p className="text-sm text-gray-500">{currentDate}</p>
             <h1 className="text-2xl font-bold text-gray-900">
-              Welcome to Payfonte
+              Welcome {user.email} {user.role === "admin" && (
+                <span className="text-xs align-middle bg-red-300 border-red-600 border text-red-600 rounded-sm px-3 py-1.5">Admin</span>
+              )}
             </h1>
           </div>
         </div>
 
         <div className="flex gap-6">
           {/* Sidebar */}
-          <Sidebar />
+          <Sidebar role={user.role} />
 
           {/* Main Content */}
           <main className="flex-1">
