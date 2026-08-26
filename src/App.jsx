@@ -6,11 +6,13 @@ export default function App() {
   const storedUser = localStorage.getItem('user');
   const initialUser = storedUser ? JSON.parse(storedUser) : null;
 
-  const [user, setUser] = useState(initialUser)
+  const storedToken = localStorage.getItem('token');
+  const initialToken = storedToken ? storedToken : null;
 
-  if (!user) return (
+  const [user, setUser] = useState(initialUser)
+  if (!user && !initialToken) return (
   <>
-    <Login setUser={setUser}/>
+      <Login setUser={setUser}/>
   </>)
   return (
     <>

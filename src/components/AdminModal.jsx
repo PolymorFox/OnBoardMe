@@ -13,7 +13,12 @@ export default function AdminModal({ isModalOpen, closeModal }) {
 
   async function refreshUsers() {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`);
+      const loginToken = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+        headers: {
+          "Authorization": `Bearer ${loginToken}`
+        }
+      });
       const result = await response.json();
       setUsers(result);
     } catch (error) {
@@ -25,7 +30,12 @@ export default function AdminModal({ isModalOpen, closeModal }) {
   useEffect(() => {
     async function fetchInitialUsers() {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`);
+        const loginToken = localStorage.getItem('token');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+          headers: {
+            "Authorization": `Bearer ${loginToken}`
+          }
+        });
         const result = await response.json();
         setUsers(result);
       } catch (error) {

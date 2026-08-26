@@ -5,10 +5,12 @@ export default function UpdateUser({ formState, users, closeForm, onFinish }) {
 
   async function updateUserBackend(id, email, role_id) {
     try {
+      const loginToken = localStorage.getItem('token');
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${id}`, {
         method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${loginToken}`
         },
         body: JSON.stringify({
           'email': email,

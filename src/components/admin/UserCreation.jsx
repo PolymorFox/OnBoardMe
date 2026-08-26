@@ -17,10 +17,12 @@ export default function UserCreation({ formState, onFinish, closeForm }) {
     setError('');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/create_user`, {
+      const loginToken = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${loginToken}`
         },
         body: JSON.stringify(formData),
       });

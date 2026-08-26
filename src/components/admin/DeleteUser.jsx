@@ -6,7 +6,11 @@ export default function DeleteUser({ formState, users, closeForm, onFinish }) {
 
   async function deleteUser(id) {
     try {
+      const loginToken = localStorage.getItem('token');
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${loginToken}`
+        },
         method: "DELETE"
       });
 

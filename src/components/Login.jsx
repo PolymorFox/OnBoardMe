@@ -1,31 +1,49 @@
 import { useState } from "react";
 import logo from "../../public/favicon.ico"
 
-async function fetchLogin(email, password) {
+async function fetchUser(token) {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.user;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Network error", error);
+    return null;
+  }
+}
+
+async function fetchToken(email, password) {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         'email': email,
-        'password': password,
+        'password': password
       })
     });
 
-    const data = await response.json();
-
-    if (response.ok && data.authenticated) {
-      return data.user;
+    if(response.ok){
+      const data = await response.json();
+      return data.token;
     } else {
-      console.error("Login failed", data.message || 'Unknown error');
+      console.error("Login failed");
+      return null;
     }
   } catch (error) {
     console.error("Network error", error);
     return null;
   }
-
 }
 
 export function Login({ setUser }) {
@@ -45,12 +63,15 @@ export function Login({ setUser }) {
     setError('');
 
     try {
-      const user = await fetchLogin(email, password);
+      const token = await fetchToken(email, password)
 
-      if (user) {
-        console.log("User data", user);
+      if (token) {
+        localStorage.setItem('token', token);
+
+        const user = await fetchUser(token);
+        if (!user) setError("Invalid or expired login token");
         setUser(user);
-        localStorage.setItem('user',JSON.stringify(user))
+        localStorage.setItem('user', JSON.stringify(user));
       } else {
         console.error("Login failed");
         setError("Invalid email or password");
