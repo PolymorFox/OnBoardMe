@@ -10,12 +10,16 @@ export default function App() {
   const [user, setUser] = useState(initialUser);
 
   // Set up tasks before passing them to the checklist
-  localStorage.setItem('tasks', user.tasks)
   const [tasks, setTasks] = useState(() => {
     const saved = localStorage.getItem('tasks');
-    return saved ? JSON.parse(saved) : JSON.parse(user.tasks);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    if (user && user.tasks) {
+      return user.tasks;
+    }
+    return []; // Default empty array if no user
   });
-
   if (!user && !storedToken) return (
   <>
       <Login setUser={setUser}/>
