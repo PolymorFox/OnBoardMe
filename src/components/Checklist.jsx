@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import PhaseCard from "./PhaseCard";
 import NextSteps from "./NextSteps";
 import Buddy from "./Buddy";
 
-export default function Checklist({ user, setUser }) {
+export default function Checklist({ tasks, setTasks ,user, setUser }) {
   const [completedTasks, setCompletedTasks] = useState(0);
-  // Get tasks from passed user argument
-  const tasks = JSON.parse(user.tasks)
   const [phases, setPhases] = useState([
     {
       phase: "PHASE 01",
@@ -30,12 +28,16 @@ export default function Checklist({ user, setUser }) {
       status: "pending",
       tasks: tasks[2],
     }
-  ])
+  ]);
   const currentDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
   });
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   function updateTaskStatus(phaseIndex, taskIndex, newStatus) {
     // This function is meant to update the main state version of the phase
@@ -47,15 +49,25 @@ export default function Checklist({ user, setUser }) {
       }
       return updatedPhases;
     })
+    setTasks(prevTasks => {
+      const newTask = [...prevTasks];
+      newTask[phaseIndex] = { ...newTask[phaseIndex] };
+      newTask[phaseIndex][taskIndex] = { ...newTask[phaseIndex][taskIndex], status: newStatus };
+      return newTask;
+    });
   }
 
   function finishPhase(phaseIndex) {
-    setPhases((prevPhases) => {
-      const updatedPhases = [...prevPhases];
-      updatedPhases[phaseIndex].status = "complete";
-      updatedPhases[phaseIndex + 1].status = "current";
-      return updatedPhases;
-    })
+    if (phaseIndex !== 2) {
+      setPhases((prevPhases) => {
+        const updatedPhases = [...prevPhases];
+        updatedPhases[phaseIndex].status = "complete";
+        updatedPhases[phaseIndex + 1].status = "current";
+        return updatedPhases;
+      })
+    } else {
+      alert("You have finished onboarding")
+    }
   }
 
   // Always default currentPhase to 0, when it is undefined
@@ -137,6 +149,7 @@ export default function Checklist({ user, setUser }) {
             <NextSteps
               tasks={currentPhase.tasks}
               updateTaskStatus={(taskIndex, newStatus) => updateTaskStatus(currentPhaseIndex, taskIndex, newStatus)}
+              currentPhaseIndex={currentPhaseIndex}
               finishPhase={() => finishPhase(currentPhaseIndex)}
               setCompletedTasks={setCompletedTasks}
               completedTasks={completedTasks}

@@ -1,6 +1,6 @@
 import { CheckCircle, Clock, Hash } from "lucide-react";
 
-export default function NextSteps({ tasks, updateTaskStatus, finishPhase, setCompletedTasks, completedTasks }) {
+export default function NextSteps({ tasks, updateTaskStatus, finishPhase, setCompletedTasks, completedTasks, currentPhaseIndex }) {
 
   const statusConfig = {
     completed: {

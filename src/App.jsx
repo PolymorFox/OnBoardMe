@@ -7,16 +7,22 @@ export default function App() {
   const initialUser = storedUser ? JSON.parse(storedUser) : null;
 
   const storedToken = localStorage.getItem('token');
-  const initialToken = storedToken ? storedToken : null;
+  const [user, setUser] = useState(initialUser);
 
-  const [user, setUser] = useState(initialUser)
-  if (!user && !initialToken) return (
+  // Set up tasks before passing them to the checklist
+  localStorage.setItem('tasks', user.tasks)
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem('tasks');
+    return saved ? JSON.parse(saved) : JSON.parse(user.tasks);
+  });
+
+  if (!user && !storedToken) return (
   <>
       <Login setUser={setUser}/>
   </>)
   return (
     <>
-      <Checklist user={user} setUser={setUser}/>
+      <Checklist tasks={tasks} setTasks={setTasks} user={user} setUser={setUser}/>
     </>
   )
 }
