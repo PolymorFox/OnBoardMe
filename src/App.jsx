@@ -16,7 +16,7 @@ export default function App() {
   </>)
   return (
     <>
-      <Checklist user={user}/>
+      <Checklist user={user} setUser={setUser}/>
     </>
   )
 }

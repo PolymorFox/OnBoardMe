@@ -4,7 +4,7 @@ import PhaseCard from "./PhaseCard";
 import NextSteps from "./NextSteps";
 import Buddy from "./Buddy";
 
-export default function Checklist({ user }) {
+export default function Checklist({ user, setUser }) {
   const [completedTasks, setCompletedTasks] = useState(0);
   // Get tasks from passed user argument
   const tasks = JSON.parse(user.tasks)
@@ -77,6 +77,14 @@ export default function Checklist({ user }) {
               )}
             </h1>
           </div>
+          {/* Sign out button */}
+          <button onClick={() => {
+            localStorage.removeItem('user');
+
+            // We should let them use a token of a different user if they log back in as a different user
+            localStorage.removeItem('token');
+            setUser(null);
+          }} className="self-end font-semibold bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-md hover:shadow-md">Sign out</button>
         </div>
 
         <div className="flex gap-6">
