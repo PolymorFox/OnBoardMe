@@ -5,7 +5,7 @@ export default function Buddy() {
 
   return (
     <>
-      <section className="bg-white shadow-sm p-6 rounded-lg border border-gray-100 w-full mt-5">
+      <section id="onboarding-buddy" className="bg-white shadow-sm p-6 rounded-lg border border-gray-100 w-full mt-5">
         <h3 className="text-xs tracking-wider uppercase text-slate-400">Your onboarding buddy</h3>
         <div className="mt-4 flex items-center gap-3 flex-row">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold">

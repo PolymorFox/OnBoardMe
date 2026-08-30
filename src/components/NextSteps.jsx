@@ -1,6 +1,6 @@
 import { CheckCircle, Clock, Hash } from "lucide-react";
 
-export default function NextSteps({ tasks, updateTaskStatus, finishPhase, setCompletedTasks, completedTasks }) {
+export default function NextSteps({ tasks, currentPhaseIndex, phaseLength, updateTaskStatus, finishPhase, setCompletedTasks, globalCompletedTasks, openWelcomeScreen }) {
 
   const statusConfig = {
     completed: {
@@ -25,20 +25,20 @@ export default function NextSteps({ tasks, updateTaskStatus, finishPhase, setCom
 
   // Keep track of completed tasks in this component
   let completedCount = tasks.filter(task => task.status === "completed").length;
-  // completedCount cannot be greater than 5 in this component, as completedCount is only the number of completed tasks per phase, not as a whole
-  completedCount > 5 ? completedCount = 5 : completedCount;
-  // Calculate the percentage of completion based on completedCount
+  // completedCount cannot be greater than the number of tasks per phase in this component, as completedCount is only the number of completed tasks per phase, not as a whole
+  completedCount > tasks.length ? completedCount = tasks.length : completedCount;
+  // Calculate the percentage of completion based on completedCounts
   const progressPercentage = (completedCount / tasks.length) * 100;
 
 
   const updateCompletedTasks = (newStatus) => {
     if (newStatus === "completed") {
-      setCompletedTasks(completedTasks + 1);
+      setCompletedTasks(globalCompletedTasks);
     } else if (newStatus === "inProgress" || newStatus === "upcoming") {
-      if (completedTasks === 0) {
+      if (globalCompletedTasks === 0) {
         setCompletedTasks(0);
       } else {
-        setCompletedTasks(completedTasks - 1);
+        setCompletedTasks(globalCompletedTasks - 1);
       }
     }
   }
@@ -109,7 +109,13 @@ export default function NextSteps({ tasks, updateTaskStatus, finishPhase, setCom
             </div>
           );
         })}
-        <button disabled={completedTasks < 5} onClick={finishPhase} className={`mt-8 px-2.5 py-2.5 rounded-md font-semibold ${completedCount < 5 ? "bg-gray-300 text-gray-400" : "text-white bg-indigo-600 hover:bg-indigo-800"} `}>Finish This Phase</button>
+        <button disabled={completedCount < tasks.length} onClick={() => {
+          if (currentPhaseIndex === phaseLength - 1) {
+            openWelcomeScreen()
+          } else {
+             finishPhase()
+          }
+        }} className={`mt-8 px-2.5 py-2.5 rounded-md font-semibold ${completedCount < tasks.length ? "bg-gray-300 text-gray-400" : "text-white bg-indigo-600 hover:bg-indigo-800"} `}>{currentPhaseIndex === phaseLength - 1 ? "Finish onboarding" : "Finish this phase"}</button>
       </div>
     </div>
   );

@@ -46,7 +46,7 @@ async function fetchToken(email, password) {
   }
 }
 
-export function Login({ setUser }) {
+export function Login({ onLogin }) {
   const [error, setError] = useState("");
 
   async function handleLogin(e) {
@@ -69,8 +69,11 @@ export function Login({ setUser }) {
         localStorage.setItem('token', token);
 
         const user = await fetchUser(token);
-        if (!user) setError("Invalid or expired login token");
-        setUser(user);
+        if (!user) {
+          setError("Invalid or expired login token");
+          return;
+        }
+        onLogin(user, token);
         localStorage.setItem('user', JSON.stringify(user));
       } else {
         console.error("Login failed");

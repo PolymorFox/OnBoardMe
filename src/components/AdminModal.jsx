@@ -11,6 +11,9 @@ export default function AdminModal({ isModalOpen, closeModal }) {
   const [updateFormState, setUpdateFormState] = useState(false);
   const [deleteFormState, setDeleteFormState] = useState(false);
 
+  // Retrieve user permissions from localStorage
+  const permissions = JSON.parse(localStorage.getItem('user')).permissions
+
   async function refreshUsers() {
     try {
       const loginToken = localStorage.getItem('token');
@@ -52,7 +55,7 @@ export default function AdminModal({ isModalOpen, closeModal }) {
   return createPortal(
     (
       <>
-        <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center overflow-hidden">
+        <div className="overscroll-contain fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center overflow-hidden">
           <div className="bg-white p-5 rounded-md shadow-2xl w-4/5 min-w-3/5 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <div className="flex items-center gap-3">
@@ -79,7 +82,7 @@ export default function AdminModal({ isModalOpen, closeModal }) {
                   ])}
                 </div>
                 <div className="mt-3">
-                  <button
+                  {permissions.includes("create_users") && <button
                     onClick={() => {
                       // We want only one form to be open at a time
                       setUpdateFormState(false)
@@ -87,8 +90,8 @@ export default function AdminModal({ isModalOpen, closeModal }) {
                       userFormState ? setUserFormState(false) : setUserFormState(true)
                     }}
                     className="align-middle hover:bg-blue-700 bg-blue-600 p-2 rounded-md text-white hover:cursor-pointer flex items-center gap-2">
-                     <Plus /> New User
-                  </button>
+                    <Plus /> New User
+                  </button>}
                   <UserCreation
                     formState={userFormState}
                     onFinish={refreshUsers}
@@ -100,7 +103,7 @@ export default function AdminModal({ isModalOpen, closeModal }) {
                     formState={updateFormState}
                     closeForm={() => setUpdateFormState(false)}
                   />
-                  <button
+                  {permissions.includes("update_users") && <button
                     onClick={() => {
                       setUserFormState(false);
                       setDeleteFormState(false);
@@ -108,14 +111,14 @@ export default function AdminModal({ isModalOpen, closeModal }) {
                     }}
                     className="mt-2 align-middle hover:bg-blue-700 bg-blue-600 p-2 rounded-md text-white hover:cursor-pointer flex items-center gap-2">
                     <RefreshCw /> Update A User Record
-                  </button>
+                  </button>}
                   <DeleteUser
                     users={users}
                     onFinish={refreshUsers}
                     formState={deleteFormState}
                     closeForm={() => setDeleteFormState(false)}
                   />
-                  <button
+                  {permissions.includes("delete_users") && <button
                     onClick={() => {
                       setUserFormState(false);
                       setUpdateFormState(false);
@@ -123,7 +126,7 @@ export default function AdminModal({ isModalOpen, closeModal }) {
                     }}
                     className="mt-3 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     Delete a user
-                  </button>
+                  </button>}
                 </div>
               </div>
             </div>
@@ -131,7 +134,7 @@ export default function AdminModal({ isModalOpen, closeModal }) {
         </div>
       </>
     ),
-    document.body
+    document.querySelector("#admin-modal")
   );
 
 }

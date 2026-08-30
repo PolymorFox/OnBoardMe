@@ -1,4 +1,4 @@
-import { Home, ClipboardList, BookOpen, Users, FileText } from "lucide-react";
+import { Home, ClipboardList, Users } from "lucide-react";
 import AdminModal from "./AdminModal";
 import { useState } from "react";
 
@@ -16,8 +16,6 @@ export default function Sidebar({ role }) {
 
   let SidebarItems = [
     { name: "Overview", icon: Home },
-    { name: "Training", icon: BookOpen },
-    { name: "Docs", icon: FileText },
     { name: "Team & buddy", icon: Users },
   ]
   return (
@@ -29,7 +27,7 @@ export default function Sidebar({ role }) {
           {SidebarItems.map((item) => (
             <li key={item.name}>
               <a
-                href="#"
+                href={item.name === "Team & buddy" ? "#onboarding-buddy" : "#progress"}
                 className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100"
               >
                 <item.icon className="w-4 h-4" />
