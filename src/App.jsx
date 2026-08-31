@@ -4,19 +4,17 @@ import { Login } from "./components/Login";
 import { mergePhases, PROGRESS_KEY } from "./phases";
 
 export default function App() {
-  const storedToken = localStorage.getItem('token');
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(storedToken || null);
   const [phases, setPhases] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // On mount: if there's a stored token, fetch the user profile and initialize phases
   useEffect(() => {
-    if (!token) return;
+    if (!localStorage.getItem('token')) return;
     const abort = new AbortController();
     setLoading(true);
     fetch(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       signal: abort.signal,
     })
       .then((res) => res.ok ? res.json() : Promise.reject(res.status))
@@ -38,12 +36,10 @@ export default function App() {
     localStorage.setItem('token', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
     setUser(newUser);
-    setToken(newToken);
     // Re-fetch fresh template on login — the useEffect above won't re-run
-    // because token state already equals newToken (same value). Kick it manually.
     setLoading(true);
     fetch(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
-      headers: { Authorization: `Bearer ${newToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((res) => res.ok ? res.json() : Promise.reject(res.status))
       .then((data) => {
@@ -62,11 +58,10 @@ export default function App() {
     localStorage.removeItem('onboardme_phaseProgress');
     // Keep the phase template cached — it's cheap and role-based
     setUser(null);
-    setToken(null);
     setPhases(null);
   };
 
-  if (!user && !token) {
+  if (!user && !localStorage.getItem('token')) {
     return <Login onLogin={handleLogin} />;
   }
 
@@ -92,7 +87,7 @@ export default function App() {
       <Checklist
         user={user}
         phases={phases}
-        token={token}
+        token={localStorage.getItem('token')}
         userId={user?.id}
         onLogout={handleLogout}
       />
