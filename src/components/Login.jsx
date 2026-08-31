@@ -1,5 +1,6 @@
 import { useState } from "react";
 import logo from "../../public/favicon.ico"
+import Spinner from "./LoadingSpinner"
 
 async function fetchUser(token) {
   try {
@@ -48,9 +49,11 @@ async function fetchToken(email, password) {
 
 export function Login({ onLogin }) {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin(e) {
     e.preventDefault();
+    setLoading(true);
 
     const email = e.target.email.value;
     const password = e.target.password.value;
@@ -82,6 +85,8 @@ export function Login({ onLogin }) {
     } catch (error) {
       console.error("Login error", error);
       setError("Login error", error)
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -114,8 +119,13 @@ export function Login({ onLogin }) {
               )}
 
                    <button type="submit"
-                      class="w-full py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer tracking-wide text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                    Sign in
+                     className={`w-full py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer tracking-wide text-white border border-blue-600 ${loading ? "bg-blue-700" : "bg-blue-600"} hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500`}>
+                {loading ? (
+                  <>
+                    <Spinner color="#FFFFFF" height={30} />
+                    Signing in ...
+                  </>
+                ) : "Sign in"}
               </button>
                 </form>
              </div>
